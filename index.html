@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>辽宁滨海湿地蓝碳碳汇核算与可视化平台</title>
+<style>
+:root{color-scheme:dark;--bg:#0f1c27;--panel:#152738;--raised:#1c3448;--line:#2b485d;--text:#e6f0f6;--muted:#a4bdcd;--blue:#3e8bbd;--green:#60aa93;--amber:#e1a75c;--purple:#a08bc1;--red:#a26464}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 Inter,"Microsoft YaHei","PingFang SC",sans-serif;font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}button,select{cursor:pointer}button{background:var(--raised);border:1px solid var(--line);border-radius:4px;padding:6px 11px}button:hover,select:hover{border-color:var(--blue)}button[aria-pressed=true]{background:#244761;border-color:var(--blue);color:#f5fbff}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #a4dcff;outline-offset:3px}
+h1,h2,h3,p{margin:0}h2{font-size:17px;font-weight:600}h3{font-size:15px;font-weight:600}.muted{color:var(--muted)}.small{font-size:12px}.shell{max-width:2200px;margin:auto}.mast{min-height:66px;margin:9px 10px 0;padding:12px clamp(18px,3vw,54px);background:#122434;display:flex;align-items:center;justify-content:space-between;gap:15px}.mast h1{font-size:22px;font-weight:600;letter-spacing:.025em}.mast p{color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:minmax(165px,15%) minmax(0,1fr);gap:22px;padding:20px clamp(14px,2.4vw,48px) 26px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;min-width:0}.sidebar{display:flex;flex-direction:column;justify-content:space-between;padding:27px 15px 18px}.sidebar nav{display:grid;gap:clamp(15px,3.1vh,36px)}.nav-button{text-align:left;width:100%;min-height:49px;padding:12px clamp(8px,1.25vw,24px);background:transparent;border-color:transparent;color:var(--muted);white-space:nowrap}.nav-button[aria-current=page]{color:var(--text);background:var(--raised);border-color:var(--blue)}.side-note{margin:32px 8px 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+main{min-width:0}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}.metric{position:relative;padding:14px 16px 12px 28px;min-height:88px}.metric:before{content:"";position:absolute;left:3px;top:2px;bottom:2px;width:7px;background:var(--tone);border-radius:1px}.metric span{display:block;color:var(--muted);font-size:13px}.metric strong{display:block;margin-top:6px;font-size:24px;font-weight:600;line-height:1.25}.metric small{font-size:13px;font-weight:500;margin-left:5px}
+.overview{display:grid;grid-template-columns:minmax(0,2.7fr) minmax(200px,1fr);gap:20px}.primary{display:grid;gap:18px;min-width:0}.map-panel{padding:13px 16px 7px}.panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px}.map-panel h2{font-size:15px}.map-controls,.actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.map-controls button{font-size:12px;padding:3px 8px}.map{position:relative;overflow:hidden;border:1px solid #587186;background:#244a58;touch-action:pan-y;cursor:grab}.map.zoomed{touch-action:none}.map.dragging{cursor:grabbing}.map-scene{position:absolute;inset:0;transform-origin:center;user-select:none}.map-scene img,.map-scene>svg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}.map-mark{position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);width:19px;height:19px;padding:0;background:transparent;border:0;z-index:1}.map-mark:hover,.map-mark:focus-visible{z-index:2}.map-mark:before{content:"";width:6px;height:6px;background:#ffda55;border:1px solid #483721;display:block}.map-mark.core:before{width:9px;height:8px;background:#ff7954;border:0;clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 1px 1px #111)}.map-mark:hover:before,.map-mark:focus-visible:before{scale:1.5}
+.map-key,.zoom,.compass,.scale,.map-detail{position:absolute;z-index:3}.map-key{top:8px;left:8px;display:grid;gap:2px;background:#102333e8;padding:4px 7px;border-radius:3px;color:#e9f3f9;font-size:11px}.map-key label{display:flex;align-items:center;gap:5px;cursor:pointer}.map-key input{margin:0;accent-color:#78acd0}.point-key{width:7px;height:7px;background:#ffda55;display:inline-block}.point-key.core{background:#ff7954;clip-path:polygon(50% 0,100% 100%,0 100%)}.zoom{right:8px;bottom:10px;display:grid;gap:4px}.zoom button{width:30px;height:27px;line-height:1;padding:0;background:#122434ee}.compass{right:12px;top:8px;text-align:center;text-shadow:0 1px 3px #061018}.compass svg{display:block;margin:auto}.scale{bottom:8px;left:12px;color:white;text-shadow:0 1px 2px #000;font-size:10px}.scale-bar{height:5px;background:linear-gradient(90deg,#e6f0f6 50%,#122435 50%);border:1px solid #e6f0f6;width:88px}.map-detail{left:9px;bottom:32px;background:#102333f5;border:1px solid #7894a5;padding:8px 30px 8px 10px;border-radius:3px;max-width:calc(100% - 58px);font-size:12px}.map-detail button{position:absolute;right:2px;top:2px;background:none;border:0;padding:3px 6px}.chart-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.chart-panel{padding:12px 15px 10px}.chart-title{display:flex;justify-content:space-between;align-items:baseline;gap:5px;flex-wrap:wrap}.chart-title h2{font-size:15px}.chart{width:100%;height:clamp(145px,19vh,265px);display:block;overflow:visible}.chart text{fill:var(--muted);font-size:11px}.chart .grid{stroke:var(--line);stroke-width:1}.chart .focus-point:focus{outline:none;stroke:#fff;stroke-width:3}.chart [tabindex]{cursor:pointer}
+.legend{padding:17px clamp(12px,1.6vw,28px);display:flex;flex-direction:column;gap:14px}.legend h2{font-size:15px}.levels{display:grid;gap:6px}.level{display:flex;align-items:center;text-align:left;gap:12px;border-color:transparent;background:none;padding:6px 2px;width:100%}.level i,.swatch{display:inline-block;width:29px;height:13px;background:var(--tone);flex:none}.legend hr{width:100%;margin:2px 0 0;border:0;border-top:1px solid var(--line)}.donut{width:min(100%,235px);aspect-ratio:1.48;margin:auto;position:relative;border-radius:50%;background:conic-gradient(var(--blue) 0 10%,var(--green) 10% 69%,var(--amber) 69% 94%,var(--purple) 94% 100%)}.donut:after{content:"";position:absolute;inset:27%;background:var(--panel);border-radius:50%}.donut b{position:absolute;inset:0;display:grid;place-content:center;z-index:1;font-weight:500}.categories{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;color:var(--muted);font-size:11px}.categories span{white-space:nowrap}.categories .swatch{width:7px;height:7px;margin-right:4px}.method{margin-top:auto;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:4px}
+.page{padding:20px;min-height:540px}.page>header{margin-bottom:19px;display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}.inner-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.inner{border:1px solid var(--line);border-radius:4px;padding:15px;min-width:0}.inner h3{margin-bottom:10px}.inner p+p{margin-top:8px}.analysis-chart{height:245px}.range-row{display:flex;align-items:center;gap:12px;margin:12px 0}.range-row input{width:100%;accent-color:#59a1d3}.inline-stat{color:#a3d9f9;font-size:22px;font-weight:600}.filters,.form-grid{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:10px 0 16px}label.field{display:grid;gap:5px;color:var(--muted);font-size:13px}input:not([type=checkbox],[type=range]),select{background:#102232;border:1px solid #38576d;padding:7px 9px;border-radius:4px;max-width:100%;min-width:110px}.form-grid input{width:140px}.primary-button{background:#225173;border-color:#4b8eb8}.result{padding:12px 0 5px;border-top:1px solid var(--line)}.result dl{display:grid;grid-template-columns:1fr auto;gap:6px 12px;margin:9px 0 0}.result dd{margin:0;color:var(--text)}.result dt{color:var(--muted)}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap;text-align:left;font-size:13px}th,td{border-bottom:1px solid var(--line);padding:9px 11px}th{color:var(--muted);font-weight:500;background:#122334}.table-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}.table-actions button{margin-left:4px}.report-note{margin:9px 0 12px;color:var(--muted)}.print-only{display:none}[hidden]{display:none!important}
+@media(min-width:1550px){.layout{gap:28px}.metrics{gap:22px;margin-bottom:26px}.metric{min-height:105px}.overview{gap:22px}.primary,.chart-row{gap:22px}.map-panel{padding:16px 21px 8px}.legend{gap:18px}}
+@media(max-width:1050px){.layout{gap:12px;grid-template-columns:145px minmax(0,1fr)}.sidebar{padding-inline:8px}.metrics{gap:8px}.metric{padding-left:17px}.metric strong{font-size:20px}.overview{gap:12px;grid-template-columns:minmax(0,1fr) 175px}.chart-row{gap:10px}.legend{padding:12px}.map-panel{padding-inline:9px}.chart-panel{padding-inline:8px}.categories{grid-template-columns:1fr}}
+@media(max-width:760px){.mast{align-items:flex-start;flex-direction:column;gap:4px}.mast h1{font-size:18px}.mast p{font-size:12px}.layout{display:block;padding:12px}.sidebar{padding:6px;margin-bottom:12px}.sidebar nav{display:flex;flex-wrap:wrap;gap:3px}.nav-button{width:auto;min-height:38px;padding:6px 9px;font-size:13px}.side-note{display:none}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:12px}.metric{min-height:72px;padding-top:9px}.overview{grid-template-columns:1fr}.legend{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}.legend hr{display:none}.legend h2:nth-of-type(2){grid-column:2;grid-row:1}.legend .donut{grid-column:2;grid-row:2;width:min(100%,170px)}.categories{grid-column:2;grid-template-columns:1fr 1fr}.method{grid-column:1/-1}.map{height:255px}.page{padding:14px;min-height:0}.inner-grid{grid-template-columns:1fr}}
+@media(max-width:420px){.chart-row{grid-template-columns:1fr}.chart{height:165px}.analysis-chart{height:200px}.map-controls button{padding:4px 7px}.coordinates{font-size:9px}}
+@media print{body{background:white;color:#111;font:12px/1.4 sans-serif}.shell{max-width:none}.mast,.sidebar,.metrics,#overview,#analysis,#decision,#samples,.no-print{display:none!important}.layout{display:block;padding:0}#report{display:block!important;border:0;background:white;padding:0;min-height:0}.print-only{display:block}.table-wrap{overflow:visible}th,td{border-color:#bbb;color:#111;padding:6px;background:white}.report-note{color:#333}.report-table{break-inside:auto}tr{break-inside:avoid}@page{margin:15mm}}
+.map{height:clamp(300px,39vh,590px);background:#081827;border-color:#2d536a;isolation:isolate}
+.map:focus-visible{outline:2px solid #a4dcff;outline-offset:3px}.map-scene>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.map-geography .place{fill:#b1cbd7;font-size:15px;letter-spacing:2px;paint-order:stroke;stroke:#0c1a28;stroke-width:4px;stroke-linejoin:round}
+.map-geography .water-label{fill:#83b7cd;font-size:20px;letter-spacing:9px;opacity:.73}
+.map-geography .coast{vector-effect:non-scaling-stroke}
+.map-key{background:#081b2dea;border:1px solid #2e5165;top:10px;left:10px;padding:6px 8px}
+.compass{top:12px;right:15px;color:#beeaf5}.compass path{fill:#a5dae9}
+.map-badge{position:absolute;z-index:3;bottom:9px;left:10px;color:#bdd1dc;font-size:10px;border-radius:3px;background:#081a29eb;padding:3px 7px;border:1px solid #2b4c61;pointer-events:none}
+.map .zoom{right:9px;bottom:10px;gap:0;border:1px solid #355870;border-radius:4px;overflow:hidden;background:#071b2be8}.zoom button{width:32px;height:29px;border:0;border-radius:0;background:transparent}.zoom button+button{border-top:1px solid #355870}.zoom button:hover{background:#214358}.zoom button:focus-visible{outline-offset:-3px}
+.map-region{position:absolute;z-index:2;display:flex;align-items:center;gap:5px;padding:3px 7px 3px 5px;white-space:nowrap;transform:translate(-12%,-105%) scale(var(--inverse-zoom,1));transform-origin:12% 100%;background:#0b2434f2;border:1px solid #538a9d;border-radius:3px;color:#def9ff;line-height:1.35;font-size:11px;box-shadow:0 2px 7px #05111ab3}
+.map-region[data-region="2"]{transform:translate(-12%,50%) scale(var(--inverse-zoom,1));transform-origin:12% 0}
+.map-region[aria-pressed="true"]{background:#1d5264;border-color:#9ae4e6}.map-region i{width:7px;height:7px;border:1px solid #cdfdff;background:#5cd1ce;border-radius:50%;box-shadow:0 0 0 2px #68d8df40}
+.map-mark{transform:translate(-50%,-50%) scale(var(--inverse-zoom,1))}.map-mark:before{width:8px;height:8px}.map-detail{bottom:40px;border-color:#467086}.map-controls button[aria-pressed=true]{color:#c1fcff;border-color:#4b8899;background:#1c4658}
+.map-caption{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 8px;padding-top:5px;color:var(--muted);font-size:10px}
+@media(max-width:760px){.map{height:290px}.map-region{font-size:10px}.map-region[data-region="2"]{transform:translate(-84%,65%) scale(var(--inverse-zoom,1));transform-origin:84% 0}.map-geography .place{font-size:20px}.map-geography .water-label{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="mast">
+<h1>辽宁滨海湿地蓝碳碳汇核算与可视化平台</h1>
+<p>研究区 · 盘锦红海滩 / 营口滨海湿地</p>
+</header>
+<div class="layout">
+<aside class="sidebar panel">
+<nav aria-label="平台功能">
+<button class="nav-button" data-page="overview" aria-current="page">植被类型分布图</button>
+<button class="nav-button" data-page="analysis">碳汇时空分析</button>
+<button class="nav-button" data-page="decision">决策辅助看板</button>
+<button class="nav-button" data-page="samples">样点与数据管理</button>
+<button class="nav-button" data-page="report">报告导出</button>
+</nav>
+<p class="side-note">数据口径 · 项目示意</p>
+</aside>
+<main>
+<div class="metrics" aria-label="研究区概览">
+<div class="metric panel" style="--tone:var(--blue)"><span>区域总碳汇量 · 2025 年</span><strong>16.5<small>万吨 CO₂e</small></strong></div>
+<div class="metric panel" style="--tone:var(--green)"><span>湿地总面积</span><strong>33.9<small>万亩</small></strong></div>
+<div class="metric panel" style="--tone:var(--amber)"><span>碳汇热点区域</span><strong>12<small>处</small></strong></div>
+<div class="metric panel" style="--tone:var(--purple)"><span>湿地分类</span><strong>4<small>类</small></strong></div>
+</div>
+
+<section id="overview" class="overview" aria-label="湿地空间概览">
+<div class="primary">
+<section class="panel map-panel">
+<div class="panel-head">
+<h2>湿地碳汇空间分布图 <span class="small muted">· 辽东湾北部</span></h2>
+<div class="map-controls" aria-label="地图图层">
+<button type="button" data-layer="intensity" aria-pressed="true">碳汇强度</button>
+<button type="button" data-layer="vegetation" aria-pressed="false">植被类型</button>
+<button type="button" data-layer="hotspots" aria-pressed="false">热点</button>
+</div>
+</div>
+<div class="map" id="map" tabindex="0" role="region" aria-label="辽东湾北部蓝碳示意地图" aria-describedby="map-help">
+<div class="map-scene" id="scene">
+<svg class="map-geography" id="map-geography" viewBox="0 0 1000 510" preserveAspectRatio="none" aria-hidden="true"></svg>
+<svg id="map-overlay" viewBox="0 0 1000 510" preserveAspectRatio="none" aria-hidden="true"></svg>
+<div id="markers"></div>
+<div id="map-regions"></div>
+</div>
+<div class="map-key">
+<label><input type="checkbox" id="toggle-quadrat"><i class="point-key"></i>植被样方（30）</label>
+<label><input type="checkbox" id="toggle-core"><i class="point-key core"></i>沉积物柱状点（15）</label>
+</div>
+<div class="compass" aria-hidden="true">N<svg width="12" height="23" viewBox="0 0 12 23"><path d="M6 0 11 8 7 7v16H5V7L1 8z" fill="#edf6fb"/></svg></div>
+<div class="map-badge" id="map-zoom-label">辽东湾北部 · 1.0×</div>
+<div class="zoom" aria-label="地图缩放">
+<button id="zoom-in" type="button" aria-label="放大地图">+</button>
+<button id="zoom-out" type="button" aria-label="缩小地图">−</button>
+<button id="zoom-reset" type="button" aria-label="重置地图">归位</button>
+</div>
+<div class="map-detail" id="map-detail" hidden><div id="map-detail-text" role="status"></div><button id="close-map-detail" type="button" aria-label="关闭样点详情">×</button></div>
+</div>
+<p class="map-caption" id="map-help"><span>拖动平移 · 滚轮或 + / − 缩放 · 点选研究区定位</span><span>底图 Natural Earth · 碳汇格网为示意数据</span></p>
+</section>
+<div class="chart-row">
+<section class="panel chart-panel"><div class="chart-title"><h2>年碳汇量变化趋势</h2><span class="small muted">万吨 CO₂e</span></div><svg class="chart" id="overview-trend" viewBox="0 0 390 175" role="img" aria-label="2015 至 2025 年年碳汇量趋势"></svg></section>
+<section class="panel chart-panel"><div class="chart-title"><h2>分类型碳汇系数对比</h2><span class="small muted">t C/(ha·年)</span></div><svg class="chart" id="coefficient-chart" viewBox="0 0 390 175" role="img" aria-label="碱蓬草 2.85、芦苇 4.32、潮滩 1.18、互花米草 3.67"></svg></section>
+</div>
+</div>
+<aside class="panel legend" aria-label="碳汇分级与湿地占比">
+<h2>碳汇强度分级</h2>
+<div class="levels">
+<button class="level" data-level="0" aria-pressed="false"><i style="--tone:var(--green)"></i>高碳汇区</button>
+<button class="level" data-level="1" aria-pressed="false"><i style="--tone:var(--blue)"></i>中碳汇区</button>
+<button class="level" data-level="2" aria-pressed="false"><i style="--tone:var(--amber)"></i>低碳汇区</button>
+<button class="level" data-level="3" aria-pressed="false"><i style="--tone:var(--red)"></i>碳源 / 流失区</button>
+</div>
+<hr>
+<h2>植被类型面积占比</h2>
+<div class="donut" role="img" aria-label="碱蓬草 10%，芦苇 59%，潮滩 25%，互花米草 6%"><b>湿地</b></div>
+<div class="categories" id="categories"></div>
+<div class="method small muted"><p>数据口径 · 示意参数</p><p>核算框架 · 植被 NPP + 土壤碳埋藏</p></div>
+</aside>
+</section>
+
+<section id="analysis" class="page panel" hidden>
+<header><h2>碳汇时空分析</h2><p class="small muted">2015—2025 年 · 演示序列</p></header>
+<div class="filters">
+<label class="field">研究区<select id="analysis-region"></select></label>
+<label class="field">时间尺度<select id="period"><option value="annual">年际变化</option><option value="season">季节变化</option></select></label>
+</div>
+<div class="inner">
+<div class="chart-title"><h3 id="analysis-title">年碳汇量变化趋势</h3><span class="small muted">万吨 CO₂e</span></div>
+<svg class="chart analysis-chart" id="analysis-chart" viewBox="0 0 700 205" role="img" aria-label="碳汇量趋势"></svg>
+<div class="range-row"><label for="year">年份</label><input id="year" type="range" min="2015" max="2025" value="2025"><output id="selected-year" for="year">2025</output></div>
+<p id="analysis-value" class="inline-stat" aria-live="polite"></p>
+<p class="small muted">区域拆分和季节分配为演示情景。置信区间待实测数据接入后计算。</p>
+</div>
+</section>
+
+<section id="decision" class="page panel" hidden>
+<header><h2>决策辅助看板</h2><p class="small muted">双路径碳汇估算</p></header>
+<div class="inner-grid">
+<div class="inner">
+<h3>碳汇量估算</h3>
+<form id="calculator">
+<div class="form-grid">
+<label class="field">湿地类型<select id="calc-type"></select></label>
+<label class="field">项目面积（公顷）<input id="area" type="number" min="0.01" step="any" max="1000000000" value="100" required></label>
+<button type="submit" class="primary-button">计算碳汇量</button>
+</div>
+</form>
+<div class="result" id="calc-result" aria-live="polite"></div>
+</div>
+<div class="inner">
+<h3>潜力评估与选址提示</h3>
+<label class="field">研究区<select id="decision-region"></select></label>
+<p id="site-note" style="margin-top:12px"></p>
+<p class="small muted">初筛时结合历史碳汇变化、潮汐水文连通性、用地现状与保护边界核查。互花米草为入侵物种，系数仅用于现状核算。</p>
+</div>
+</div>
+</section>
+
+<section id="samples" class="page panel" hidden>
+<header><h2>样点与数据管理</h2><p class="small muted">30 个植被样方 / 15 个沉积物柱状点 · 示意布设</p></header>
+<div class="filters">
+<label class="field">研究区<select id="sample-region"></select></label>
+<label class="field">样点类别<select id="sample-kind"><option value="">全部类别</option><option value="quadrat">植被样方</option><option value="core">沉积物柱状点</option></select></label>
+<label class="field">湿地类型<select id="sample-type"></select></label>
+<label class="field">样点编号<input type="search" id="sample-search" placeholder="例如 V-01"></label>
+</div>
+<div class="table-wrap"><table><thead><tr><th>编号</th><th>研究区</th><th>样点类别</th><th>湿地类型</th><th>示意经度</th><th>示意纬度</th></tr></thead><tbody id="sample-rows"></tbody></table></div>
+<div class="table-actions"><span id="sample-count" class="muted" role="status"></span><div><button id="previous" type="button">上一页</button><button id="next" type="button">下一页</button></div></div>
+</section>
+
+<section id="report" class="page panel" hidden>
+<header class="no-print"><h2>报告导出</h2><p class="small muted">湿地碳汇系数与样点清单</p></header>
+<h2 class="print-only">辽宁滨海湿地蓝碳碳汇报告</h2>
+<div class="filters no-print">
+<label class="field">研究区<select id="report-region"></select></label>
+<label class="field">湿地类型<select id="report-type"></select></label>
+<button id="export-xlsx" type="button" class="primary-button">下载 Excel</button>
+<button id="export-pdf" type="button">打印 / 保存 PDF</button>
+</div>
+<p id="report-summary" class="report-note"></p>
+<div class="table-wrap"><table class="report-table"><thead><tr><th>湿地类型</th><th>植被 NPP</th><th>土壤碳埋藏</th><th>综合系数</th></tr></thead><tbody id="report-coefficients"></tbody></table></div>
+<h3 style="margin-top:18px">样点清单</h3>
+<div class="table-wrap"><table class="report-table"><thead><tr><th>编号</th><th>研究区</th><th>样点类别</th><th>湿地类型</th><th>示意经度</th><th>示意纬度</th></tr></thead><tbody id="report-rows"></tbody></table></div>
+</section>
+</main>
+</div>
+</div>
+<script>
+"use strict";
+
+const types = [
+  {name:"碱蓬草", full:"碱蓬草盐沼", npp:1.62, soil:1.23, total:2.85, share:10, color:"var(--blue)"},
+  {name:"芦苇", full:"芦苇沼泽", npp:2.48, soil:1.84, total:4.32, share:59, color:"var(--green)"},
+  {name:"潮滩", full:"潮滩泥滩", npp:0.55, soil:0.63, total:1.18, share:25, color:"var(--amber)"},
+  {name:"互花米草", full:"互花米草", npp:2.10, soil:1.57, total:3.67, share:6, color:"var(--purple)"}
+];
+const regions = [
+  {name:"全部研究区", share:1},
+  {name:"盘锦红海滩", share:.64, site:"优先核查潮沟连通性受损的碱蓬草盐沼，以及具备退养还湿条件的地块。"},
+  {name:"营口滨海湿地", share:.36, site:"优先核查河口芦苇沼泽和潮滩过渡带，结合水文条件与既有用地判断修复可行性。"}
+];
+const levels = ["var(--green)", "var(--blue)", "var(--amber)", "var(--red)"];
+const years = Array.from({length:11}, (_,i) => 2015+i);
+const annual = [12.4,12.8,13.1,12.9,13.6,14.2,14.8,15.3,15.6,16.1,16.5];
+const seasonShare = [.22,.43,.27,.08];
+const coordinates = [[[0.67419, 0.15424], [0.62706, 0.09629], [0.16645, 0.28566], [0.15303, 0.14668], [0.63774, 0.37047], [0.81748, 0.53411], [0.23214, 0.57949], [0.24672, 0.37036], [0.69454, 0.21716], [0.47368, 0.40041], [0.42385, 0.25683], [0.3645, 0.601], [0.10825, 0.07704], [0.45928, 0.38521], [0.32166, 0.16672], [0.40037, 0.22733], [0.5362, 0.19529], [0.6649, 0.44131], [0.61205, 0.61011], [0.718, 0.39671], [0.06726, 0.47348], [0.63855, 0.4318], [0.53778, 0.0642], [0.81558, 0.48727], [0.89434, 0.19416], [0.06242, 0.57559], [0.79491, 0.31105], [0.27843, 0.46394], [0.61201, 0.52853], [0.7375, 0.43552]], [[0.83613, 0.66551], [0.54837, 0.89929], [0.49972, 0.57722], [0.73045, 0.77761], [0.48803, 0.70979], [0.17188, 0.57678], [0.18685, 0.44272], [0.66162, 0.70381], [0.45818, 0.59651], [0.24965, 0.68541], [0.86245, 0.59941], [0.29939, 0.84097], [0.71362, 0.44335], [0.33697, 0.84814], [0.68402, 0.5988]]];
+const kindNames = {quadrat:"植被样方", core:"沉积物柱状点"};
+const sampleTypes = Array.from({length:30}, (_,i) => i<10 ? 0 : i<18 ? 1 : i<25 ? 2 : 3);
+const samples = coordinates.flatMap((group, kindIndex) => group.map(([x,y], index) => {
+  const kind = kindIndex ? "core" : "quadrat";
+  const region = index % 3 === 2 ? 2 : 1;
+  const lon = region === 1 ? 121.583 + x * .334 : 122.08 + x * .23;
+  const lat = region === 1 ? 40.917 - y * .084 : 40.68 - y * .18;
+  return {id:(kindIndex ? "S-" : "V-") + String(index+1).padStart(2,"0"),
+    x,y,region,kind,lon,lat,type:kindIndex ? [2,1,0,2,3][index%5] : sampleTypes[index]};
+}));
+const $ = (id) => document.getElementById(id);
+const all = (selector) => Array.from(document.querySelectorAll(selector));
+const fmt = (value, digits=2) => value.toLocaleString("zh-CN", {minimumFractionDigits:digits, maximumFractionDigits:digits});
+const addOptions = (id, labels, includeAll = false) => {
+  const select = $(id);
+  if (includeAll) select.add(new Option("全部湿地类型",""));
+  labels.forEach((label, i) => select.add(new Option(label,i)));
+};
+["analysis-region","sample-region","report-region"].forEach(id => addOptions(id,regions.map(r=>r.name)));
+addOptions("decision-region",regions.map(r=>r.name));
+$("decision-region").value = "1";
+addOptions("calc-type",types.map(t=>t.full));
+$("calc-type").value = "1";
+["sample-type","report-type"].forEach(id => addOptions(id,types.map(t=>t.full),true));
+
+function showPage(page) {
+  all("[data-page]").forEach(button => {
+    const isCurrent = button.dataset.page === page;
+    $(button.dataset.page).hidden = !isCurrent;
+    if (isCurrent) button.setAttribute("aria-current","page");
+    else button.removeAttribute("aria-current");
+  });
+}
+all("[data-page]").forEach(button => button.addEventListener("click",() => {
+  showPage(button.dataset.page);
+  if (matchMedia("(max-width:760px)").matches) button.scrollIntoView({block:"nearest",inline:"nearest"});
+}));
+
+$("categories").innerHTML = types.map(t=>'<span><i class="swatch" style="--tone:'+t.color+'"></i>'+t.name+' '+t.share+'%</span>').join("");
+
+const geography = {"coast":[[119.8504,39.9875],[120.3689,40.2039],[120.4791,40.231],[120.7707,40.5891],[120.8413,40.6492],[120.9223,40.6831],[121.0029,40.7491],[121.0859,40.8416],[121.1745,40.9013],[121.5371,40.8784],[121.5989,40.8434],[121.7293,40.8461],[121.7656,40.8759],[121.8086,40.9685],[121.8349,40.9743],[121.8588,40.8421],[122.1404,40.6882],[122.1787,40.6027],[122.275,40.5418],[122.2639,40.5002],[122.2033,40.396],[122.1909,40.3583],[121.9828,40.1358],[121.8689,40.0464],[121.801,39.9505],[121.5174,39.8448],[121.4742,39.7549],[121.5143,39.6853],[121.5176,39.639],[121.4695,39.6401],[121.4064,39.6212],[121.2675,39.5447],[121.2863,39.5194],[121.2998,39.4522],[121.2755,39.3848],[121.3557,39.3768],[121.5125,39.3749],[121.7854,39.4008],[121.8185,39.3865],[121.7578,39.3476]],"rivers":[[[123.5539,43.4835],[123.6138,43.3985],[123.6041,43.2896],[123.5447,43.1282],[123.5338,43.0194],[123.5713,42.9633],[123.5827,42.8769],[123.5681,42.7603],[123.6111,42.6602],[123.7119,42.5764],[123.7736,42.5038],[123.7963,42.4425],[123.8306,42.4061],[123.7706,42.3271],[123.5127,42.2031],[123.3502,42.1494],[123.2829,42.1661],[123.177,42.1446],[123.0326,42.0849],[122.8929,41.9572],[122.7581,41.7617],[122.677,41.5792],[122.636,41.3248],[122.4573,41.2137],[122.4006,41.1332],[122.4403,41.0545],[122.4094,41.0026],[122.3259,40.9633],[122.2942,40.8984],[122.2363,40.8516],[122.1523,40.8229],[122.1474,40.7798],[122.1404,40.6882]]]};
+const map = $("map");
+const scene = $("scene");
+const markers = $("markers");
+const mapWidth = 1000;
+const mapHeight = 510;
+const extent = {west:120.34,east:122.63,south:39.69,north:41.18};
+const project = (lon,lat)=>[
+  (lon-extent.west)/(extent.east-extent.west)*mapWidth,
+  (extent.north-lat)/(extent.north-extent.south)*mapHeight
+];
+const regionLocations = [
+  {id:1,point:project(121.783,40.902)},
+  {id:2,point:project(122.165,40.660)}
+];
+const place = (label,lon,lat,className="place")=>{
+  const [x,y]=project(lon,lat);
+  return '<text class="'+className+'" x="'+x+'" y="'+y+'">'+label+'</text>';
+};
+const pathFrom = (points)=>points.map(([lon,lat],i)=>{
+  const [x,y]=project(lon,lat);
+  return (i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1);
+}).join(" ");
+function drawGeography() {
+  const coast = pathFrom(geography.coast);
+  const water = coast+" L -240 900 L -240 400 Z";
+  $("map-geography").innerHTML = '<defs>'+
+    '<linearGradient id="land-fill" x2=".8" y2="1"><stop stop-color="#1b3440"/><stop offset="1" stop-color="#0b1e2b"/></linearGradient>'+
+    '<radialGradient id="water-fill" cx=".49" cy=".43" r=".75"><stop stop-color="#12364d"/><stop offset="1" stop-color="#071626"/></radialGradient>'+
+    '<pattern id="chart-grid" width="45" height="37" patternUnits="userSpaceOnUse"><path d="M45 0H0V37" fill="none" stroke="#94c8df" stroke-opacity=".17" stroke-width="1"/></pattern>'+
+    '<pattern id="land-texture" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M1 1h1 M5 4h1 M2 6h1" stroke="#a7c4cc" opacity=".11"/></pattern>'+
+    '<clipPath id="water-mask"><path d="'+water+'"/></clipPath></defs>'+
+    '<rect width="1000" height="510" fill="url(#land-fill)"/>'+
+    '<rect width="1000" height="510" fill="url(#land-texture)"/>'+
+    '<path d="'+water+'" fill="url(#water-fill)"/>'+
+    '<g clip-path="url(#water-mask)" fill="none" stroke="#5a9fbb" opacity=".18">'+[18,36,59,85].map(offset=>'<path d="'+coast+'" transform="translate(-'+offset+' '+offset*.9+')"/>').join("")+'</g>'+
+    '<rect width="1000" height="510" fill="url(#chart-grid)"/>'+
+    '<path class="coast" d="'+coast+'" fill="none" stroke="#337a8d" stroke-width="4" opacity=".3"/>'+
+    '<path class="coast" d="'+coast+'" fill="none" stroke="#85c9cc" stroke-width="1.15" opacity=".78"/>'+
+    geography.rivers.map(points=>'<path class="coast" d="'+pathFrom(points)+'" fill="none" stroke="#6b9fac" stroke-width="1" opacity=".52"/>').join("")+
+    place("锦州",121.12,41.04)+place("盘锦",121.98,41.06)+place("营口",122.35,40.73)+
+    place("辽东湾",121.13,40.15,"water-label")+place("辽东半岛",122.18,40.13);
+}
+drawGeography();
+
+let layer = "intensity";
+let activeLevel = null;
+let selectedRegion = null;
+const intensityColors = ["#65d9ba","#398fd2","#e1ad6e","#b36b73"];
+const gridSize=11;
+const zones = [
+  {point:project(121.57,40.862),rx:55,ry:22,type:0,peak:.85},
+  {point:project(121.73,40.876),rx:69,ry:30,type:1,peak:1},
+  {point:project(121.88,40.842),rx:48,ry:29,type:0,peak:.9},
+  {point:project(122.01,40.757),rx:60,ry:26,type:2,peak:.66},
+  {point:project(122.12,40.701),rx:45,ry:29,type:3,peak:.74},
+  {point:project(122.19,40.615),rx:42,ry:35,type:1,peak:.93},
+  {point:project(122.25,40.535),rx:39,ry:28,type:2,peak:.61}
+];
+const grid = [];
+for(let y=0;y<mapHeight;y+=gridSize) {
+  for(let x=0;x<mapWidth;x+=gridSize) {
+    let score=0, type=0;
+    zones.forEach(({point:[cx,cy],rx,ry,type:zoneType,peak})=>{
+      const field=peak*Math.exp(-(((x-cx)/rx)**2+((y-cy)/ry)**2)*.86);
+      if(field>score){score=field;type=zoneType;}
+    });
+    const noise=.12*Math.sin(x*.13+y*.17)*Math.cos(y*.32-x*.07);
+    score+=noise;
+    if(score<.18) continue;
+    const loss = score<.58 && score>.33 && type===3 && Math.sin(x*.21+y*.22)>.75;
+    const level=loss ? 3 : score>.70 ? 0 : score>.43 ? 1 : 2;
+    grid.push({x,y,type,level,score});
+  }
+}
+
+function renderLayer() {
+  all("[data-layer]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.layer===layer)));
+  all("[data-level]").forEach(b=>b.setAttribute("aria-pressed",String(layer==="intensity" && Number(b.dataset.level)===activeLevel)));
+  const opacityOf = ({level,score})=>activeLevel===null || activeLevel===level
+    ? Math.min(.94,.42+score*.49).toFixed(2) : ".12";
+  const cells=grid.map(cell=>{
+    const {x,y,type,level,score}=cell;
+    if(layer==="hotspots" && score<.70) return "";
+    const color=layer==="vegetation" ? types[type].color : intensityColors[level];
+    const opacity=opacityOf(cell);
+    return '<rect x="'+x+'" y="'+y+'" width="'+(gridSize-.65)+'" height="'+(gridSize-.65)+'" fill="'+color+'" opacity="'+opacity+'" data-intensity="'+level+'"/>';
+  }).join("");
+  const hotspots=layer==="hotspots" ? zones.filter(zone=>zone.peak>=.85).map(({point:[x,y]})=>
+    [18,28].map(r=>'<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="none" stroke="#b0f3e5" stroke-width="1.2" opacity=".68" vector-effect="non-scaling-stroke"/>').join("")
+  ).join("") : "";
+  $("map-overlay").innerHTML=cells+hotspots;
+}
+all("[data-layer]").forEach(b=>b.addEventListener("click",()=>{layer=b.dataset.layer;activeLevel=null;renderLayer();}));
+all("[data-level]").forEach(b=>b.addEventListener("click",()=>{
+  const next=Number(b.dataset.level);
+  activeLevel=layer==="intensity" && activeLevel===next ? null : next;
+  layer="intensity";
+  renderLayer();
+}));
+renderLayer();
+
+let currentMarker = null;
+const camera = {zoom:1,x:0,y:0};
+let drag = null;
+const clamp = (value,min,max) => Math.min(max,Math.max(min,value));
+function setPosition(element, [x,y]) {
+  element.style.left=(x/mapWidth*100)+"%";
+  element.style.top=(y/mapHeight*100)+"%";
+}
+function closeMarker(restoreFocus = false) {
+  $("map-detail").hidden=true;
+  if(restoreFocus) currentMarker?.focus({preventScroll:true});
+  currentMarker=null;
+}
+function openMarker(button,text) {
+  currentMarker=button;
+  $("map-detail-text").textContent=text;
+  $("map-detail").hidden=false;
+}
+function updateMarkers() {
+  markers.querySelectorAll("button").forEach(button=>{
+    const {kind,region}=button.dataset;
+    button.hidden=!$("toggle-"+kind).checked || (selectedRegion!==null && Number(region)!==selectedRegion);
+  });
+  Object.keys(kindNames).forEach(kind=>{
+    const count=samples.filter(s=>s.kind===kind && (selectedRegion===null || s.region===selectedRegion)).length;
+    $("toggle-"+kind).parentElement.lastChild.textContent=kindNames[kind]+"（"+count+"）";
+  });
+  if(currentMarker?.hidden) closeMarker();
+}
+Object.keys(kindNames).forEach(kind=>$("toggle-"+kind).addEventListener("change",updateMarkers));
+samples.forEach(s=>{
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="map-mark "+s.kind;
+  button.dataset.kind=s.kind;
+  button.dataset.region=s.region;
+  setPosition(button,project(s.lon,s.lat));
+  button.setAttribute("aria-label",s.id+" "+kindNames[s.kind]+" "+types[s.type].full);
+  button.addEventListener("click",()=>openMarker(button,s.id+" · "+types[s.type].full+" · "+kindNames[s.kind]+" · "+s.lon.toFixed(4)+"°E / "+s.lat.toFixed(4)+"°N（示意）"));
+  markers.append(button);
+});
+function applyCamera() {
+  const horizontal=map.clientWidth*(camera.zoom-1)/2;
+  const vertical=map.clientHeight*(camera.zoom-1)/2;
+  camera.x=clamp(camera.x,-horizontal,horizontal);
+  camera.y=clamp(camera.y,-vertical,vertical);
+  scene.style.transform="translate("+camera.x+"px,"+camera.y+"px) scale("+camera.zoom+")";
+  scene.style.setProperty("--inverse-zoom",1/camera.zoom);
+  map.classList.toggle("zoomed",camera.zoom>1);
+  $("zoom-out").disabled=camera.zoom<=1;
+  $("zoom-in").disabled=camera.zoom>=4;
+  $("map-zoom-label").textContent=(selectedRegion===null?"辽东湾北部":regions[selectedRegion].name)+" · "+camera.zoom.toFixed(1)+"×";
+}
+function zoomBy(amount,anchorX=0,anchorY=0) {
+  const next=clamp(camera.zoom+amount,1,4);
+  const factor=next/camera.zoom;
+  camera.x=anchorX+(camera.x-anchorX)*factor;
+  camera.y=anchorY+(camera.y-anchorY)*factor;
+  camera.zoom=next;
+  if(next===1 && selectedRegion!==null) resetMap();
+  else applyCamera();
+}
+function updateRegion() {
+  all(".map-region").forEach(b=>b.setAttribute("aria-pressed",String(Number(b.dataset.region)===selectedRegion)));
+  updateMarkers();
+  applyCamera();
+}
+function resetMap() {
+  camera.zoom=1;camera.x=0;camera.y=0;selectedRegion=null;
+  closeMarker();
+  updateRegion();
+}
+function focusRegion(point) {
+  camera.zoom=2.5;
+  camera.x=(.5-point[0]/mapWidth)*map.clientWidth*camera.zoom;
+  camera.y=(.5-point[1]/mapHeight)*map.clientHeight*camera.zoom;
+  applyCamera();
+}
+regionLocations.forEach(({id,point})=>{
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="map-region";
+  button.dataset.region=id;
+  button.setAttribute("aria-pressed","false");
+  button.innerHTML="<i aria-hidden='true'></i>"+regions[id].name;
+  setPosition(button,point);
+  button.addEventListener("click",()=>{
+    if(selectedRegion===id){resetMap();return;}
+    selectedRegion=id;
+    focusRegion(point);
+    updateRegion();
+    const list=samples.filter(s=>s.region===id);
+    openMarker(button,regions[id].name+" · "+list.filter(s=>s.kind==="quadrat").length+" 个植被样方 / "+list.filter(s=>s.kind==="core").length+" 个沉积物柱状点（示意）");
+  });
+  $("map-regions").append(button);
+});
+$("close-map-detail").addEventListener("click",()=>closeMarker(true));
+$("zoom-in").addEventListener("click",()=>zoomBy(.5));
+$("zoom-out").addEventListener("click",()=>zoomBy(-.5));
+$("zoom-reset").addEventListener("click",resetMap);
+map.addEventListener("wheel",event=>{
+  if(event.ctrlKey || event.metaKey || !event.deltaY) return;
+  if((event.deltaY>0 && camera.zoom===1) || (event.deltaY<0 && camera.zoom===4)) return;
+  event.preventDefault();
+  const rect=map.getBoundingClientRect();
+  zoomBy(event.deltaY<0?.25:-.25,event.clientX-rect.left-rect.width/2,event.clientY-rect.top-rect.height/2);
+},{passive:false});
+map.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){closeMarker(true);return;}
+  if(event.target!==map) return;
+  if(event.key==="+" || event.key==="="){event.preventDefault();zoomBy(.5);return;}
+  if(event.key==="-"){event.preventDefault();zoomBy(-.5);return;}
+  const delta={ArrowLeft:[38,0],ArrowRight:[-38,0],ArrowUp:[0,38],ArrowDown:[0,-38]}[event.key];
+  if(!delta || camera.zoom===1) return;
+  event.preventDefault();
+  camera.x+=delta[0];camera.y+=delta[1];applyCamera();
+});
+map.addEventListener("pointerdown",e=>{
+  if(e.button!==0 || e.target.closest("button,label,.map-detail,.map-key") || camera.zoom===1) return;
+  drag={pointer:e.pointerId,x:e.clientX,y:e.clientY};
+  map.setPointerCapture(e.pointerId);
+  map.classList.add("dragging");
+});
+map.addEventListener("pointermove",e=>{
+  if(drag?.pointer!==e.pointerId) return;
+  camera.x+=e.clientX-drag.x;camera.y+=e.clientY-drag.y;
+  drag.x=e.clientX;drag.y=e.clientY;
+  applyCamera();
+});
+["pointerup","pointercancel","lostpointercapture"].forEach(event=>map.addEventListener(event,()=>{
+  drag=null;map.classList.remove("dragging");
+}));
+window.addEventListener("resize",()=>{if(map.clientWidth)applyCamera();});
+updateRegion();
+
+
+
+function drawChart(svg, config) {
+  const {labels, values, min, max, ticks, indexes, bars=false, selected=-1, selectPoint} = config;
+  const {width,height}=svg.viewBox.baseVal;
+  const left=35,right=width-14,top=17,bottom=height-25;
+  const step=(right-left)/labels.length;
+  const x = i=>left+step*(i+.5);
+  const y = value=>bottom-(value-min)/(max-min)*(bottom-top);
+  const parts=['<rect x="'+left+'" y="'+top+'" width="'+(right-left)+'" height="'+(bottom-top)+'" fill="none" class="grid"/>'];
+  ticks.forEach(t=>{
+    parts.push('<path d="M'+(left-4)+' '+y(t)+'H'+right+'" class="grid" opacity=".57"/>');
+    parts.push('<text x="'+(left-7)+'" y="'+(y(t)+4)+'" text-anchor="end">'+t+'</text>');
+  });
+  if (!bars) parts.push('<polyline points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'" fill="none" stroke="var(--blue)" stroke-width="2.5"/>');
+  values.forEach((v,i)=>{
+    const title = '<title>'+labels[i]+' · '+fmt(v)+'</title>';
+    if (bars) {
+      const w=step*.56;
+      parts.push('<rect x="'+(x(i)-w/2)+'" y="'+y(v)+'" width="'+w+'" height="'+(bottom-y(v))+'" fill="'+types[i].color+'">'+title+'</rect>');
+    } else {
+      const attrs=selectPoint ? ' tabindex="0" role="button" data-index="'+i+'" aria-label="'+labels[i]+' '+fmt(v)+' 万吨 CO₂e"' : "";
+      parts.push('<circle class="focus-point" cx="'+x(i)+'" cy="'+y(v)+'" r="'+(selected===i?6:3.3)+'" fill="'+(selected===i?"#b8e6ff":"var(--blue)")+'"'+attrs+'>'+title+'</circle>');
+    }
+    if (!indexes || indexes.includes(i)) parts.push('<text x="'+x(i)+'" y="'+(bottom+16)+'" text-anchor="middle">'+labels[i]+'</text>');
+  });
+  svg.innerHTML=parts.join("");
+  if(selectPoint) svg.querySelectorAll("[data-index]").forEach(point=>{
+    function choose(){const index=Number(point.dataset.index);selectPoint(index);svg.querySelector('[data-index="'+index+'"]')?.focus();}
+    point.addEventListener("click",choose);
+    point.addEventListener("keydown",e=>{if(e.key==="Enter" || e.key===" "){e.preventDefault();choose();}});
+  });
+}
+drawChart($("overview-trend"),{labels:years,values:annual,min:11,max:17.5,ticks:[11,12,13,14,15,16,17],indexes:[0,5,10]});
+drawChart($("coefficient-chart"),{labels:types.map(t=>t.name),values:types.map(t=>t.total),min:0,max:5,ticks:[0,1,2,3,4,5],bars:true});
+let selectedSeason=1;
+function drawAnalysis() {
+  const year=Number($("year").value);
+  const region=regions[Number($("analysis-region").value)];
+  const yearly=annual.map(v=>v*region.share);
+  const seasonal=$("period").value==="season";
+  const labels=seasonal ? ["春季","夏季","秋季","冬季"] : years;
+  const values=seasonal ? seasonShare.map(p=>yearly[year-2015]*p) : yearly;
+  const selected=seasonal ? selectedSeason : year-2015;
+  const increment = Math.ceil(Math.max(...values)/5);
+  const ticks=Array.from({length:6},(_,i)=>i*increment);
+  $("analysis-title").textContent=seasonal ? "季节碳汇量变化" : "年碳汇量变化趋势";
+  $("selected-year").value=year;
+  $("analysis-value").textContent=year+" 年"+(seasonal?" "+labels[selected]:"")+" · "+fmt(values[selected])+" 万吨 CO₂e";
+  drawChart($("analysis-chart"),{labels,values,min:0,max:increment*5,ticks,selected,selectPoint:i=>{
+    if(seasonal) selectedSeason=i;
+    else $("year").value=years[i];
+    drawAnalysis();
+  }});
+}
+["year","analysis-region","period"].forEach(id=>$(id).addEventListener("input",drawAnalysis));
+drawAnalysis();
+
+function updateEstimate() {
+  const area=$("area").valueAsNumber;
+  if (!$("area").validity.valid || !Number.isFinite(area)) {
+    $("calc-result").textContent="请输入 0.01 至 10 亿公顷的项目面积。";
+    return;
+  }
+  const type=types[Number($("calc-type").value)];
+  $("calc-result").innerHTML='<p class="small muted">年碳汇量 · 示意估算</p><p class="inline-stat">'+fmt(area*type.total*44/12)+' 吨 CO₂e / 年</p>'+
+    '<dl><dt>植被碳汇（面积 × NPP）</dt><dd>'+fmt(area*type.npp)+' t C/年</dd><dt>土壤碳埋藏（面积 × 埋藏速率）</dt><dd>'+fmt(area*type.soil)+' t C/年</dd><dt>合计（换算系数 44/12）</dt><dd>'+fmt(area*type.total)+' t C/年</dd></dl>';
+}
+$("calculator").addEventListener("submit",e=>{e.preventDefault();updateEstimate();});
+["area","calc-type"].forEach(id=>$(id).addEventListener("input",updateEstimate));
+updateEstimate();
+function updateSite() {
+  const region=regions[Number($("decision-region").value)];
+  $("site-note").textContent=region.site || "选择盘锦红海滩或营口滨海湿地，查看对应的初步选址提示。";
+}
+$("decision-region").addEventListener("change",updateSite);
+updateSite();
+
+const sampleHeader=["编号","研究区","样点类别","湿地类型","示意经度（°E）","示意纬度（°N）"];
+const coeffHeader=["湿地类型","植被 NPP","土壤碳埋藏","综合系数"];
+function getSamples(region,type,kind="",search="") {
+  return samples.filter(s=>(!Number(region) || s.region===Number(region))
+    && (type==="" || s.type===Number(type)) && (!kind || s.kind===kind)
+    && s.id.toLowerCase().includes(search.trim().toLowerCase()));
+}
+const sampleCells = s=>[s.id,regions[s.region].name,kindNames[s.kind],types[s.type].full,+s.lon.toFixed(4),+s.lat.toFixed(4)];
+const coefficientCells = t=>[t.full,t.npp,t.soil,t.total];
+function drawRows(tbody,rows,digits) {
+  tbody.replaceChildren();
+  if (!rows.length) {
+    const td=tbody.insertRow().insertCell();
+    td.colSpan=6;
+    td.textContent="没有匹配的样点";
+    return;
+  }
+  rows.forEach(row=>{
+    const tr=tbody.insertRow();
+    row.forEach(value=>{tr.insertCell().textContent=typeof value==="number"?value.toFixed(digits):value;});
+  });
+}
+let tablePage=1;
+function drawSamples() {
+  const filtered=getSamples($("sample-region").value,$("sample-type").value,$("sample-kind").value,$("sample-search").value);
+  const limit=10;
+  const pageCount=Math.max(1,Math.ceil(filtered.length/limit));
+  tablePage=clamp(tablePage,1,pageCount);
+  drawRows($("sample-rows"),filtered.slice((tablePage-1)*limit,tablePage*limit).map(sampleCells),4);
+  $("sample-count").textContent="共 "+filtered.length+" 条 · "+tablePage+" / "+pageCount+" 页";
+  $("previous").disabled=tablePage===1;
+  $("next").disabled=tablePage===pageCount;
+}
+["sample-region","sample-type","sample-kind","sample-search"].forEach(id=>$(id).addEventListener("input",()=>{tablePage=1;drawSamples();}));
+$("previous").addEventListener("click",()=>{tablePage--;drawSamples();});
+$("next").addEventListener("click",()=>{tablePage++;drawSamples();});
+drawSamples();
+
+function reportData() {
+  const region=$("report-region").value;
+  const type=$("report-type").value;
+  const sampleRows=getSamples(region,type).map(sampleCells);
+  const coeffRows=types.filter((_,i)=>type===""||i===Number(type)).map(coefficientCells);
+  const summary=regions[Number(region)].name+" · "+(type===""?"全部湿地类型":types[Number(type)].full)+" · "+sampleRows.length+" 个示意样点";
+  return {sampleRows,coeffRows,summary};
+}
+function drawReport() {
+  const {sampleRows,coeffRows,summary}=reportData();
+  $("report-summary").textContent=summary+"。系数单位为 t C/(ha·年)，数据供演示。";
+  drawRows($("report-rows"),sampleRows,4);
+  drawRows($("report-coefficients"),coeffRows,2);
+}
+["report-region","report-type"].forEach(id=>$(id).addEventListener("change",drawReport));
+drawReport();
+$("export-pdf").addEventListener("click",()=>window.print());
+
+const xmlHeader='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+const sheetNS="http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+const officeRel="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+const packageRel="http://schemas.openxmlformats.org/package/2006/relationships";
+const encoder=new TextEncoder();
+function escapeXml(value) {
+  return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function worksheet(rows) {
+  const body=rows.map((row,i)=>'<row r="'+(i+1)+'">'+row.map((v,j)=>{
+    const ref=String.fromCharCode(65+j)+(i+1);
+    if (typeof v==="number") return '<c r="'+ref+'"><v>'+v+'</v></c>';
+    return '<c r="'+ref+'" t="inlineStr"><is><t xml:space="preserve">'+escapeXml(v)+'</t></is></c>';
+  }).join("")+'</row>').join("");
+  return xmlHeader+'<worksheet xmlns="'+sheetNS+'"><cols><col min="1" max="1" width="28" customWidth="1"/><col min="2" max="6" width="22" customWidth="1"/></cols><sheetData>'+body+'</sheetData></worksheet>';
+}
+function crc32(bytes) {
+  let crc=-1;
+  for(const value of bytes) {
+    crc^=value;
+    for(let bit=0;bit<8;bit++) crc=(crc>>>1)^((crc&1)?0xedb88320:0);
+  }
+  return (crc^-1)>>>0;
+}
+function zipRecord(fields) {
+  const data=new Uint8Array(fields.reduce((n,[size])=>n+size,0));
+  const view=new DataView(data.buffer);
+  let offset=0;
+  for(const [size,value] of fields) {
+    if(size===2) view.setUint16(offset,value,true);
+    else view.setUint32(offset,value,true);
+    offset+=size;
+  }
+  return data;
+}
+function makeWorkbook(summary, coeffRows, sampleRows) {
+  const sheetNames=["碳汇系数","样点清单"];
+  const files=[
+    ["[Content_Types].xml",xmlHeader+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'],
+    ["_rels/.rels",xmlHeader+'<Relationships xmlns="'+packageRel+'"><Relationship Id="rId1" Type="'+officeRel+'/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+    ["xl/workbook.xml",xmlHeader+'<workbook xmlns="'+sheetNS+'" xmlns:r="'+officeRel+'"><sheets>'+sheetNames.map((name,i)=>'<sheet name="'+name+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join("")+'</sheets></workbook>'],
+    ["xl/_rels/workbook.xml.rels",xmlHeader+'<Relationships xmlns="'+packageRel+'">'+sheetNames.map((_,i)=>'<Relationship Id="rId'+(i+1)+'" Type="'+officeRel+'/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join("")+'</Relationships>'],
+    ["xl/worksheets/sheet1.xml",worksheet([["辽宁滨海湿地蓝碳碳汇系数"],[summary],["示意数据 · 单位 t C/(ha·年)"],coeffHeader,...coeffRows])],
+    ["xl/worksheets/sheet2.xml",worksheet([["辽宁滨海湿地示意样点"],[summary],sampleHeader,...sampleRows])]
+  ];
+  const local=[], central=[];
+  let offset=0, directoryLength=0;
+  files.forEach(([path,xml])=>{
+    const name=encoder.encode(path), data=encoder.encode(xml);
+    const common=[[2,0],[2,0],[2,0],[2,33],[4,crc32(data)],[4,data.length],[4,data.length],[2,name.length],[2,0]];
+    const record=zipRecord([[4,0x04034b50],[2,20],...common]);
+    const index=zipRecord([[4,0x02014b50],[2,20],[2,20],...common,[2,0],[2,0],[2,0],[4,0],[4,offset]]);
+    local.push(record,name,data);
+    central.push(index,name);
+    offset+=record.length+name.length+data.length;
+    directoryLength+=index.length+name.length;
+  });
+  const end=zipRecord([[4,0x06054b50],[2,0],[2,0],[2,files.length],[2,files.length],[4,directoryLength],[4,offset],[2,0]]);
+  return new Blob([...local,...central,end],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+$("export-xlsx").addEventListener("click",async ()=>{
+  const {sampleRows,coeffRows,summary}=reportData();
+  const workbook=makeWorkbook(summary,coeffRows,sampleRows);
+  const bytes=new Uint8Array(await workbook.arrayBuffer());
+  const base64=btoa(Array.from(bytes,byte=>String.fromCharCode(byte)).join(""));
+  const anchor=document.createElement("a");
+  anchor.href="data:"+workbook.type+";base64,"+base64;
+  anchor.download="辽宁滨海湿地蓝碳报告.xlsx";
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+
+});
+
+
+</script>
+</body>
+</html>
+
